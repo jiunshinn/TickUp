@@ -11,12 +11,17 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+import { fetchPriceTarget } from '../services/api';
+import { PriceTargetResponse } from '../types/api.types';
+import { ApiError } from '../types/api.types';
+import { useRouter } from 'expo-router';
 
 export default function Screen() {
+  const router = useRouter();
   const [symbol, setSymbol] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [priceData, setPriceData] = useState(null);
+  const [priceData, setPriceData] = useState<PriceTargetResponse | null>(null);
 
   const handleSearch = async () => {
     if (!symbol.trim()) {
@@ -27,11 +32,25 @@ export default function Screen() {
     setLoading(true);
     setError(null);
     
-    // TODO: Implement API call
-    // For now, just simulate loading
-    setTimeout(() => {
+    try {
+      const data = await fetchPriceTarget(symbol);
+      setPriceData(data);
+      setError(null);
+    } catch (err) {
+      const apiError = err as ApiError;
+      
+      // Navigate to not-found screen for 404 errors
+      if (apiError.status === 404) {
+        router.push({
+          pathname: '/+not-found',
+          params: { symbol: symbol }
+        });
+      } else {
+        setError(apiError.message || 'Failed to fetch price target');
+      }
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
