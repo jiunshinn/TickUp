@@ -4,8 +4,6 @@ import { PriceTargetResponse, ApiError } from "../types/api.types";
 // Get API base URL from environment variable
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
-console.log("API_BASE_URL", API_BASE_URL);
-
 if (!API_BASE_URL) {
   console.warn("API_BASE_URL not found in environment variables");
 }
@@ -28,7 +26,6 @@ const apiClient = axios.create({
 export const fetchPriceTarget = async (
   symbol: string
 ): Promise<PriceTargetResponse> => {
-  console.log("symbol", symbol);
   try {
     const response = await apiClient.get<PriceTargetResponse>(
       `/assessment/price-target?symbol=${symbol.toUpperCase()}`
