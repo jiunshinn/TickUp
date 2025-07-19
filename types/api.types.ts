@@ -1,5 +1,3 @@
-// API response types for the Tickup price target endpoint
-
 export interface PriceTargetResponse {
   high: number;
   low: number;
@@ -11,6 +9,6 @@ export interface PriceTargetResponse {
 }
 
 export interface ApiError {
-  message: string;
+  message?: string;
   status: number;
 }

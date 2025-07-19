@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -8,45 +8,42 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { StatusBar } from 'expo-status-bar';
-import { fetchPriceTarget } from '../services/api';
-import { PriceTargetResponse } from '../types/api.types';
-import { ApiError } from '../types/api.types';
-import { useRouter } from 'expo-router';
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
+import { fetchPriceTarget } from "../services/api";
+import { PriceTargetResponse } from "../types/api.types";
+import { ApiError } from "../types/api.types";
+import { PriceTargetChart } from "../components/PriceTargetChart";
 
 export default function Screen() {
-  const router = useRouter();
-  const [symbol, setSymbol] = useState('');
+  const [symbol, setSymbol] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [priceData, setPriceData] = useState<PriceTargetResponse | null>(null);
 
   const handleSearch = async () => {
     if (!symbol.trim()) {
-      setError('Please enter a stock symbol');
+      setError("Please enter a stock symbol");
       return;
     }
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       const data = await fetchPriceTarget(symbol);
       setPriceData(data);
       setError(null);
     } catch (err) {
       const apiError = err as ApiError;
-      
-      // Navigate to not-found screen for 404 errors
+
       if (apiError.status === 404) {
-        router.push({
-          pathname: '/+not-found',
-          params: { symbol: symbol }
-        });
+        setError(
+          `Stock symbol "${symbol.toUpperCase()}" not found. Please check the symbol and try again.`
+        );
       } else {
-        setError(apiError.message || 'Failed to fetch price target');
+        setError(apiError.message || "Failed to fetch price target");
       }
     } finally {
       setLoading(false);
@@ -55,17 +52,17 @@ export default function Screen() {
 
   return (
     <LinearGradient
-      colors={['#CAC0F4', '#C2E3C6', '#B9D7EE']}
+      colors={["#CAC0F4", "#C2E3C6", "#B9D7EE"]}
       style={styles.container}
     >
       <StatusBar style="dark" />
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
       >
         <View style={styles.content}>
           <Text style={styles.title}>Stock Price Target</Text>
-          
+
           <View style={styles.searchContainer}>
             <TextInput
               style={styles.input}
@@ -98,8 +95,7 @@ export default function Screen() {
 
           {priceData && (
             <View style={styles.chartContainer}>
-              {/* TODO: Add PriceTargetChart component */}
-              <Text style={styles.placeholderText}>Chart will be displayed here</Text>
+              <PriceTargetChart data={priceData} />
             </View>
           )}
         </View>
@@ -122,24 +118,24 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
     marginBottom: 30,
   },
   searchContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 20,
   },
   input: {
     flex: 1,
     height: 50,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 10,
     paddingHorizontal: 15,
     fontSize: 16,
     marginRight: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -149,33 +145,33 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   searchButton: {
-    backgroundColor: '#5B4CCC',
+    backgroundColor: "#5B4CCC",
     paddingHorizontal: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
     borderRadius: 10,
     minWidth: 80,
   },
   searchButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   errorContainer: {
-    backgroundColor: '#FFE5E5',
+    backgroundColor: "#FFE5E5",
     padding: 10,
     borderRadius: 8,
     marginBottom: 20,
   },
   errorText: {
-    color: '#CC0000',
-    textAlign: 'center',
+    color: "#CC0000",
+    textAlign: "center",
   },
   chartContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -185,8 +181,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   placeholderText: {
-    textAlign: 'center',
-    color: '#999',
+    textAlign: "center",
+    color: "#999",
     marginTop: 50,
   },
 });

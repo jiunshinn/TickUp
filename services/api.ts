@@ -1,14 +1,12 @@
 import axios from "axios";
 import { PriceTargetResponse, ApiError } from "../types/api.types";
 
-// Get API base URL from environment variable
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 if (!API_BASE_URL) {
   console.warn("API_BASE_URL not found in environment variables");
 }
 
-// Create axios instance with base configuration
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
@@ -17,12 +15,6 @@ const apiClient = axios.create({
   },
 });
 
-/**
- * Fetch price target data for a given stock symbol
- * @param symbol - Stock symbol (e.g., 'AAPL')
- * @returns Promise with price target data
- * @throws ApiError if request fails
- */
 export const fetchPriceTarget = async (
   symbol: string
 ): Promise<PriceTargetResponse> => {

@@ -1,18 +1,18 @@
 module.exports = {
-  preset: 'jest-expo',
+  preset: "jest-expo",
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|react-native-reanimated)'
+    "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|react-native-reanimated|d3-.*|internmap)",
   ],
   collectCoverageFrom: [
-    '**/*.{ts,tsx}',
-    '!**/coverage/**',
-    '!**/node_modules/**',
-    '!**/babel.config.js',
-    '!**/jest.setup.js',
-    '!**/.expo/**',
-    '!**/web-build/**'
+    "**/*.{ts,tsx}",
+    "!**/coverage/**",
+    "!**/node_modules/**",
+    "!**/babel.config.js",
+    "!**/jest.setup.js",
+    "!**/.expo/**",
+    "!**/web-build/**",
   ],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  testPathIgnorePatterns: ['/node_modules/', '/.expo/'],
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js']
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
+  testPathIgnorePatterns: ["/node_modules/", "/.expo/"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
 };
