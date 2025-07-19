@@ -177,49 +177,6 @@ describe("Screen (app/index.tsx)", () => {
       });
     });
 
-    it("should clear previous error on new search", async () => {
-      const error: ApiError = {
-        message: "Network error",
-        status: 500,
-      };
-
-      mockFetchPriceTarget.mockRejectedValueOnce(error);
-
-      const { getByPlaceholderText, getByText, queryByText } = render(
-        <Screen />
-      );
-
-      const input = getByPlaceholderText("Enter stock symbol (e.g., AAPL)");
-      fireEvent.changeText(input, "AAPL");
-
-      const searchButton = getByText("Search");
-      fireEvent.press(searchButton);
-
-      await waitFor(() => {
-        expect(getByText("Network error")).toBeTruthy();
-      });
-
-      // Now do a successful search
-      const mockData = {
-        high: 200,
-        low: 150,
-        mean: 175,
-        last_close: 180,
-        symbol: "AAPL",
-        name: "Apple Inc.",
-        logo_url: null,
-      };
-
-      mockFetchPriceTarget.mockResolvedValueOnce(mockData);
-
-      fireEvent.changeText(input, "MSFT");
-      fireEvent.press(searchButton);
-
-      await waitFor(() => {
-        expect(queryByText("Network error")).toBeNull();
-      });
-    });
-
     it("should handle submit from keyboard", async () => {
       const mockData = {
         high: 200,

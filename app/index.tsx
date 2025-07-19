@@ -30,11 +30,11 @@ export default function Screen() {
 
     setLoading(true);
     setError(null);
+    setPriceData(null);
 
     try {
       const data = await fetchPriceTarget(symbol);
       setPriceData(data);
-      setError(null);
     } catch (err) {
       const apiError = err as ApiError;
 
@@ -93,7 +93,7 @@ export default function Screen() {
             </View>
           )}
 
-          {priceData && (
+          {priceData && !error && (
             <View style={styles.chartContainer}>
               <PriceTargetChart data={priceData} />
             </View>
