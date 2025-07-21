@@ -22,7 +22,7 @@ The component displays analyst price targets (low, mean, high) alongside the cur
 1. Clone the repository:
 
 ```bash
-git clone [repository-url]
+git clone https://github.com/jiunshinn/TickUp.git
 cd TickUp
 ```
 
