@@ -4,7 +4,8 @@ A self-contained React Native component for visualizing stock price targets with
 
 ## 📱 Demo Screenshots
 
-<img src="demo.png" alt="Price Target Visualization" width="300">
+<img src="demo2.png" alt="Price Target Visualization" width="300">
+<img src="demo.png" alt="Test mode" width="300">
 
 The component displays analyst price targets (low, mean, high) alongside the current stock price in a clean, horizontal chart format.
 
