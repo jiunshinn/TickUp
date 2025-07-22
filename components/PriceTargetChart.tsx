@@ -42,12 +42,12 @@ export const PriceTargetChart: React.FC<PriceTargetChartProps> = ({ data }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.titleRow}>
-        <Text style={styles.title}>Price Targets</Text>
-        <View style={styles.infoIcon}>
-          <Text style={styles.infoIconText}>ⓘ</Text>
-        </View>
-      </View>
+      {name && (
+        <Text style={styles.companyName} numberOfLines={1} ellipsizeMode="tail">
+          {name}
+        </Text>
+      )}
+      <Text style={styles.title}>Price Targets</Text>
 
       <View style={styles.chartArea}>
         <Svg width={CHART_WIDTH} height={CHART_HEIGHT}>
@@ -70,9 +70,10 @@ export const PriceTargetChart: React.FC<PriceTargetChartProps> = ({ data }) => {
               p.type === "Average" || p.type === "Last Close";
             const dashedLineStartY = lineY + (MARKER_RADIUS - 3) * yDirection;
             // Different end positions for Average vs Last Close
-            const dashedLineEndY = p.type === "Last Close" 
-              ? priceY - (yDirection > 0 ? 4 : -4)  // More spacing for Last Close
-              : priceY - (yDirection > 0 ? 2 : -2);  // Regular spacing for Average
+            const dashedLineEndY =
+              p.type === "Last Close"
+                ? priceY - (yDirection > 0 ? 5 : -5) // Longer line for Last Close, stops before price
+                : priceY - (yDirection > 0 ? 2 : -2); // Regular spacing for Average
 
             return (
               <React.Fragment key={p.type}>
@@ -104,7 +105,8 @@ export const PriceTargetChart: React.FC<PriceTargetChartProps> = ({ data }) => {
                   textAnchor={
                     p.type === "Low" && p.x <= LABEL_PADDING_X + 5
                       ? "start"
-                      : p.type === "High" && p.x >= CHART_WIDTH - LABEL_PADDING_X - 5
+                      : p.type === "High" &&
+                        p.x >= CHART_WIDTH - LABEL_PADDING_X - 5
                       ? "end"
                       : "middle"
                   }
@@ -121,7 +123,8 @@ export const PriceTargetChart: React.FC<PriceTargetChartProps> = ({ data }) => {
                   textAnchor={
                     p.type === "Low" && p.x <= LABEL_PADDING_X + 5
                       ? "start"
-                      : p.type === "High" && p.x >= CHART_WIDTH - LABEL_PADDING_X - 5
+                      : p.type === "High" &&
+                        p.x >= CHART_WIDTH - LABEL_PADDING_X - 5
                       ? "end"
                       : "middle"
                   }
@@ -158,12 +161,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 24,
-    marginBottom: 24,
+    marginBottom: 8,
   },
   title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#000000",
+    fontSize: 14,
+    fontWeight: "400",
+    color: "#666666",
   },
   infoIcon: {
     marginLeft: 8,
@@ -183,18 +186,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     minHeight: CHART_HEIGHT,
-    marginTop: 0,
-    marginBottom: 16,
-    // paddingHorizontal: CHART_PADDING,
-    // overflow: "visible",
+    marginTop: 16,
+    paddingHorizontal: CHART_PADDING,
+    overflow: "visible",
   },
   footer: {
     alignItems: "center",
-    marginTop: 4,
+    marginTop: 12,
   },
   footerText: {
     fontSize: 12,
     color: "#888888",
     fontWeight: "400",
+  },
+  companyName: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#000000",
+    marginBottom: 16,
+    textAlign: "left",
   },
 });
