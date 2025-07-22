@@ -68,8 +68,11 @@ export const PriceTargetChart: React.FC<PriceTargetChartProps> = ({ data }) => {
             // Add dashed lines for Average and Last Close
             const needsDashedLine =
               p.type === "Average" || p.type === "Last Close";
-            const dashedLineStartY = lineY + (MARKER_RADIUS + 1) * yDirection;
-            const dashedLineEndY = priceY - (yDirection > 0 ? 3 : -3);
+            const dashedLineStartY = lineY + (MARKER_RADIUS - 3) * yDirection;
+            // Different end positions for Average vs Last Close
+            const dashedLineEndY = p.type === "Last Close" 
+              ? priceY - (yDirection > 0 ? 4 : -4)  // More spacing for Last Close
+              : priceY - (yDirection > 0 ? 2 : -2);  // Regular spacing for Average
 
             return (
               <React.Fragment key={p.type}>
