@@ -15,8 +15,8 @@ interface PriceTargetChartProps {
 
 const { width: screenWidth } = Dimensions.get("window");
 
-const CHART_PADDING = 32;
-const CHART_WIDTH = screenWidth - (CHART_PADDING * 2);
+const CHART_PADDING = 60;
+const CHART_WIDTH = 310;
 const CHART_HEIGHT = 100; // Increased to accommodate labels
 const LINE_Y = 50; // Center line position within SVG
 const MARKER_RADIUS = 4;
@@ -62,8 +62,8 @@ export const PriceTargetChart: React.FC<PriceTargetChartProps> = ({ data }) => {
 
           {points.map((p) => {
             const yDirection = p.yLevel === 0 ? -1 : 1;
-            const priceY = lineY + (PRICE_LABEL_OFFSET_Y * yDirection);
-            const descY = priceY + (DESC_LABEL_OFFSET_Y * yDirection);
+            const priceY = lineY + PRICE_LABEL_OFFSET_Y * yDirection;
+            const descY = priceY + DESC_LABEL_OFFSET_Y * yDirection;
 
             // Add dashed lines for Average and Last Close
             const needsDashedLine =
@@ -98,7 +98,13 @@ export const PriceTargetChart: React.FC<PriceTargetChartProps> = ({ data }) => {
                 <SvgText
                   x={p.x}
                   y={priceY}
-                  textAnchor="middle"
+                  textAnchor={
+                    p.type === "Low" && p.x <= LABEL_PADDING_X + 5
+                      ? "start"
+                      : p.type === "High" && p.x >= CHART_WIDTH - LABEL_PADDING_X - 5
+                      ? "end"
+                      : "middle"
+                  }
                   fontSize={14}
                   fill="#000000"
                   fontWeight="600"
@@ -109,7 +115,13 @@ export const PriceTargetChart: React.FC<PriceTargetChartProps> = ({ data }) => {
                 <SvgText
                   x={p.x}
                   y={descY}
-                  textAnchor="middle"
+                  textAnchor={
+                    p.type === "Low" && p.x <= LABEL_PADDING_X + 5
+                      ? "start"
+                      : p.type === "High" && p.x >= CHART_WIDTH - LABEL_PADDING_X - 5
+                      ? "end"
+                      : "middle"
+                  }
                   fontSize={12}
                   fill="#A8A8A8"
                   fontWeight="400"
@@ -170,8 +182,8 @@ const styles = StyleSheet.create({
     minHeight: CHART_HEIGHT,
     marginTop: 0,
     marginBottom: 16,
-    paddingHorizontal: CHART_PADDING,
-    overflow: "visible",
+    // paddingHorizontal: CHART_PADDING,
+    // overflow: "visible",
   },
   footer: {
     alignItems: "center",
