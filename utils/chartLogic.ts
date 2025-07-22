@@ -18,7 +18,8 @@ export const calculateScaleDomain = (data: PriceTargetResponse) => {
 
 export const prepareChartPoints = (
   data: PriceTargetResponse,
-  priceToX: ScaleLinear<number, number>
+  priceToX: ScaleLinear<number, number>,
+  chartWidth: number
 ): ChartPoint[] => {
   const { high, low, mean, last_close } = data;
   const allTargetsSame = high === low && low === mean;
@@ -27,40 +28,40 @@ export const prepareChartPoints = (
     {
       type: "Low",
       value: low,
-      x: priceToX(low),
-      color: "#3478F6",
-      yLevel: 0,
+      x: 6, // Inset by radius + stroke to prevent overflow
+      color: "#A1A1A1", // Light grey as per Figma
+      yLevel: 1, // Bottom position as per requirements
       show: !allTargetsSame,
     },
     {
       type: "Average",
       value: mean,
       x: priceToX(mean),
-      color: "#3478F6",
-      yLevel: 0,
+      color: "#B9D7EE", // Light blue as per Figma
+      yLevel: 0, // Top position as per requirements
       show: !allTargetsSame,
     },
     {
       type: "High",
       value: high,
-      x: priceToX(high),
-      color: "#3478F6",
-      yLevel: 0,
+      x: chartWidth - 6, // Inset by radius + stroke to prevent overflow
+      color: "#A1A1A1", // Light grey as per Figma
+      yLevel: 1, // Bottom position as per requirements
       show: !allTargetsSame,
     },
     {
       type: "Last Close",
       value: last_close,
       x: priceToX(last_close),
-      color: "#555555",
-      yLevel: 0,
+      color: "#585858", // Dark grey as per Figma
+      yLevel: 1, // Bottom position as per requirements
       show: true,
     },
     {
       type: "Low, High, Avg",
       value: mean,
       x: priceToX(mean),
-      color: "#3478F6",
+      color: "#B9D7EE", // Using Average color for consolidated marker
       yLevel: 0,
       show: allTargetsSame,
     },
@@ -73,19 +74,23 @@ export const applyLabelCollision = (
   points: ChartPoint[],
   threshold: number
 ): ChartPoint[] => {
+  // Keep the original yLevel based on point type, only adjust if collision
   const sortedPoints = [...points].sort((a, b) => a.x - b.x);
-
   const result: ChartPoint[] = [];
 
   sortedPoints.forEach((point, i) => {
-    let yLevel = 0;
-    if (i > 0) {
-      const prev = result[i - 1];
-      if (Math.abs(point.x - prev.x) < threshold) {
-        yLevel = prev.yLevel === 0 ? 1 : 0;
+    let adjustedPoint = { ...point };
+    
+    // Check for collisions with previous points
+    for (let j = 0; j < i; j++) {
+      const prev = result[j];
+      if (Math.abs(adjustedPoint.x - prev.x) < threshold && adjustedPoint.yLevel === prev.yLevel) {
+        // If collision at same level, try to find alternative position
+        adjustedPoint.yLevel = adjustedPoint.yLevel === 0 ? 1 : 0;
       }
     }
-    result.push({ ...point, yLevel });
+    
+    result.push(adjustedPoint);
   });
 
   return result;

@@ -8,6 +8,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  ScrollView,
+  Switch,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
@@ -15,14 +17,23 @@ import { fetchPriceTarget } from "../services/api";
 import { PriceTargetResponse } from "../types/api.types";
 import { ApiError } from "../types/api.types";
 import { PriceTargetChart } from "../components/PriceTargetChart";
+import { testScenarios } from "../utils/testData";
 
 export default function Screen() {
   const [symbol, setSymbol] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [priceData, setPriceData] = useState<PriceTargetResponse | null>(null);
+  const [testMode, setTestMode] = useState(false);
+  const [selectedTest, setSelectedTest] = useState<string>("normal");
 
   const handleSearch = async () => {
+    if (testMode) {
+      // Use test data in test mode
+      setPriceData(testScenarios[selectedTest]);
+      return;
+    }
+
     if (!symbol.trim()) {
       setError("Please enter a stock symbol");
       return;
@@ -62,6 +73,49 @@ export default function Screen() {
       >
         <View style={styles.content}>
           <Text style={styles.title}>Stock Price Target</Text>
+
+          {/* Test Mode Controls */}
+          <View style={styles.testModeContainer}>
+            <View style={styles.testModeRow}>
+              <Text style={styles.testModeLabel}>Test Mode</Text>
+              <Switch
+                value={testMode}
+                onValueChange={setTestMode}
+                trackColor={{ false: "#767577", true: "#81b0ff" }}
+                thumbColor={testMode ? "#5B4CCC" : "#f4f3f4"}
+              />
+            </View>
+            {testMode && (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.testScenarioScroll}
+              >
+                {Object.keys(testScenarios).map((key) => (
+                  <TouchableOpacity
+                    key={key}
+                    style={[
+                      styles.testScenarioButton,
+                      selectedTest === key && styles.testScenarioButtonActive,
+                    ]}
+                    onPress={() => {
+                      setSelectedTest(key);
+                      setPriceData(testScenarios[key]);
+                    }}
+                  >
+                    <Text
+                      style={[
+                        styles.testScenarioText,
+                        selectedTest === key && styles.testScenarioTextActive,
+                      ]}
+                    >
+                      {key}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            )}
+          </View>
 
           <View style={styles.searchContainer}>
             <TextInput
@@ -185,5 +239,51 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#999",
     marginTop: 50,
+  },
+  testModeContainer: {
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  testModeRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  testModeLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+  },
+  testScenarioScroll: {
+    marginTop: 5,
+  },
+  testScenarioButton: {
+    backgroundColor: "#F0F0F0",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    marginRight: 10,
+  },
+  testScenarioButtonActive: {
+    backgroundColor: "#5B4CCC",
+  },
+  testScenarioText: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#666",
+  },
+  testScenarioTextActive: {
+    color: "white",
   },
 });
